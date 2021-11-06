@@ -4,11 +4,13 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Camera } from 'expo-camera';
 import logo from './assets/rever-logo.jpg';
 import * as FaceDetector from 'expo-face-detector';
+import * as tf from '@tensorflow/tfjs';
 
 export default function App() {
   const [hasPermission, setHasPermission] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [faceDetected, setFaceDetected] = useState(false);
+  const [isTfReady, setIsTfReady] = useState(false);
 
   let camera:Camera;
   let photo = null;
@@ -18,6 +20,9 @@ export default function App() {
     (async () => {
       const { status } = await Camera.requestPermissionsAsync();
       setHasPermission(status === 'granted');
+      await tf.ready();
+      setIsTfReady(true);
+      const loadedModel = await tf.loadLayersModel('./models/');
     })();
   }, []);
 
@@ -31,7 +36,6 @@ export default function App() {
     if (event.faces.length > 0) {
       const faceY = event.faces[0].bounds.origin.y;
       const faceHeight = event.faces[0].bounds.size.height;
-      console.log(faceY + ' ' + faceHeight)
       if (faceY + faceHeight < 300) setFaceDetected(true);
       else setFaceDetected(false);
     } else setFaceDetected(false);

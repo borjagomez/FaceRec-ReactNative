@@ -4,7 +4,7 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Camera } from 'expo-camera';
 import logo from './assets/rever-logo.jpg';
 import * as FaceDetector from 'expo-face-detector';
-import * as tf from '@tensorflow/tfjs';
+import Tflite from 'tflite-react-native';
 
 export default function App() {
   const [hasPermission, setHasPermission] = useState(null);
@@ -15,14 +15,25 @@ export default function App() {
   let camera:Camera;
   let photo = null;
   const faceMessage = faceDetected ? 'Face Detected' : 'No Face';
+  let tflite = new Tflite();
 
   useEffect(() => {
     (async () => {
       const { status } = await Camera.requestPermissionsAsync();
       setHasPermission(status === 'granted');
-      await tf.ready();
-      setIsTfReady(true);
-      const loadedModel = await tf.loadLayersModel('./models/');
+
+      tflite.loadModel({
+        model: 'models/mobilefacenet.tflite',
+        labels: '',  
+        numThreads: 1,
+      },
+      (err, res) => {
+        if(err)
+          console.log(err);
+        else
+          console.log(res);
+      });
+
     })();
   }, []);
 

@@ -4,36 +4,20 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Camera } from 'expo-camera';
 import logo from './assets/rever-logo.jpg';
 import * as FaceDetector from 'expo-face-detector';
-import Tflite from 'tflite-react-native';
 
 export default function App() {
   const [hasPermission, setHasPermission] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [faceDetected, setFaceDetected] = useState(false);
-  const [isTfReady, setIsTfReady] = useState(false);
-
+  
   let camera:Camera;
   let photo = null;
   const faceMessage = faceDetected ? 'Face Detected' : 'No Face';
-  let tflite = new Tflite();
 
   useEffect(() => {
     (async () => {
       const { status } = await Camera.requestPermissionsAsync();
       setHasPermission(status === 'granted');
-
-      tflite.loadModel({
-        model: 'models/mobilefacenet.tflite',
-        labels: '',  
-        numThreads: 1,
-      },
-      (err, res) => {
-        if(err)
-          console.log(err);
-        else
-          console.log(res);
-      });
-
     })();
   }, []);
 

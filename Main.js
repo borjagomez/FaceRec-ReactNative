@@ -3,20 +3,21 @@ import Header from './components/Header';
 import Capture from './components/Capture';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-export default function Main() {
+export default function Main({ navigation }) {
+
+  var faceCaptured = (photo) => {
+    navigation.navigate('Photo')
+  }
 
   return (
     <View style={styles.container}>
 
       <Header/>
 
-      <Capture/>
-
-      <TouchableOpacity
-        style={styles.buttonCapture}>
-        <Text style={styles.buttonText}>Capture</Text>
-      </TouchableOpacity>
+      <Capture onCapture={faceCaptured}/>
 
       <StatusBar style="auto" />
 
@@ -31,13 +32,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-around'
   },
-  buttonCapture: {
-    backgroundColor: "#888",
-    padding: 20,
-    borderRadius: 10,
-  },
-  buttonText: {
-    fontSize: 20,
-    color: '#fff',
-  }  
 });

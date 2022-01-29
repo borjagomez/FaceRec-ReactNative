@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Camera } from 'expo-camera';
 import * as FaceDetector from 'expo-face-detector';
 
-export default function Capture() {
+export default function Capture(props) {
   const [hasPermission, setHasPermission] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [faceDetected, setFaceDetected] = useState(false);
@@ -23,6 +23,8 @@ export default function Capture() {
   const takePhoto = async () => {
     if (camera) {
       photo = await camera.takePictureAsync();
+      console.log('Photo Taken!');
+      props.onCapture(photo);
     }
   };
 
@@ -73,6 +75,13 @@ export default function Capture() {
         </View>
       </Camera>
       <Text style={styles.label}>{faceMessage}</Text>
+
+      <TouchableOpacity
+        onPress={takePhoto}
+        style={styles.buttonCapture}>
+        <Text style={styles.buttonText}>Capture</Text>
+      </TouchableOpacity>
+
     </View>
   );
 }
@@ -103,4 +112,15 @@ const styles = StyleSheet.create({
     color: 'black',
     textAlign: 'center'
   },
+  buttonCapture: {
+    marginTop: 100,
+    backgroundColor: "#888",
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center'
+  },
+  buttonText: {
+    fontSize: 20,
+    color: '#fff',
+  }    
 });
